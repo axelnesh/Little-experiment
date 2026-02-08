@@ -69,6 +69,25 @@ canvas {
   background: rgba(255,255,255,0.85);
   cursor: pointer;
 
+  /* 🔒 blocca selezione testo e highlight su mobile */
+button,
+#dialog,
+#dialog * {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  -webkit-tap-highlight-color: transparent; /* iOS */
+}
+
+/* evita selezione accidentale su tutto il gioco */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none; /* menu copia/incolla iOS */
+}
+
   
 }
 </style>
