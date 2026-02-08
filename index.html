@@ -2,6 +2,8 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
 <title>Mini Gioco 2D</title>
 
 <style>
@@ -63,6 +65,10 @@ canvas {
   border: none;
   background: rgba(255,255,255,0.85);
   cursor: pointer;
+
+  canvas {
+  touch-action: none;
+}
 }
 </style>
 </head>
@@ -214,6 +220,53 @@ jumpBtn.addEventListener("touchstart", () => {
     player.isJumping = true;
   }
 });
+
+let touchStartX = 0;
+let touchStartY = 0;
+let touchActive = false;
+
+canvas.addEventListener("touchstart", e => {
+  const t = e.touches[0];
+  touchStartX = t.clientX;
+  touchStartY = t.clientY;
+  touchActive = true;
+});
+
+canvas.addEventListener("touchend", e => {
+  if (!touchActive) return;
+
+  const t = e.changedTouches[0];
+  const dx = t.clientX - touchStartX;
+  const dy = t.clientY - touchStartY;
+
+  const minSwipe = 40; // sensibilità swipe
+
+  // reset
+  keys["ArrowLeft"] = false;
+  keys["ArrowRight"] = false;
+
+  // swipe orizzontale
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > minSwipe) {
+    if (dx > 0) {
+      keys["ArrowRight"] = true;
+      setTimeout(() => keys["ArrowRight"] = false, 200);
+    } else {
+      keys["ArrowLeft"] = true;
+      setTimeout(() => keys["ArrowLeft"] = false, 200);
+    }
+  }
+
+  // swipe verso l’alto = salto
+  if (Math.abs(dy) > Math.abs(dx) && dy < -minSwipe) {
+    if (!player.isJumping && !playerLocked) {
+      player.vy = jumpStrength;
+      player.isJumping = true;
+    }
+  }
+
+  touchActive = false;
+});
+
 
 
 
